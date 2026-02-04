@@ -2,15 +2,7 @@ namespace SistemaVentas.Forms
 {
     partial class FormGraficos
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +14,6 @@ namespace SistemaVentas.Forms
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.panelHeader = new Panel();
@@ -34,9 +22,11 @@ namespace SistemaVentas.Forms
             this.btnActualizar = new Button();
             this.btnVentas = new Button();
             this.btnProductos = new Button();
+            this.btnGrafico = new Button();
             this.panelTarjetas = new Panel();
             this.panelEstadisticas = new Panel();
             this.lblEstadisticas = new Label();
+            this.chart1 = new Panel();
             this.panelHeader.SuspendLayout();
             this.panelBotones.SuspendLayout();
             this.panelEstadisticas.SuspendLayout();
@@ -68,6 +58,7 @@ namespace SistemaVentas.Forms
             // 
             this.panelBotones.BackColor = Color.FromArgb(236, 240, 241);
             this.panelBotones.Controls.Add(this.btnActualizar);
+            this.panelBotones.Controls.Add(this.btnGrafico);
             this.panelBotones.Controls.Add(this.btnVentas);
             this.panelBotones.Controls.Add(this.btnProductos);
             this.panelBotones.Dock = DockStyle.Top;
@@ -91,6 +82,7 @@ namespace SistemaVentas.Forms
             // panelEstadisticas
             // 
             this.panelEstadisticas.BackColor = Color.White;
+            this.panelEstadisticas.Controls.Add(this.chart1);
             this.panelEstadisticas.Controls.Add(this.lblEstadisticas);
             this.panelEstadisticas.Dock = DockStyle.Fill;
             this.panelEstadisticas.Location = new Point(0, 350);
@@ -110,6 +102,15 @@ namespace SistemaVentas.Forms
             this.lblEstadisticas.TabIndex = 0;
             this.lblEstadisticas.Text = "Cargando estadísticas...";
             this.lblEstadisticas.TextAlign = ContentAlignment.TopLeft;
+            // 
+            // chart1
+            // 
+            this.chart1.Location = new Point(20, 20);
+            this.chart1.Name = "chart1";
+            this.chart1.Size = new Size(600, 400);
+            this.chart1.TabIndex = 1;
+            this.chart1.BackColor = Color.White;
+            this.chart1.Visible = false;
             // 
             // btnActualizar
             // 
@@ -154,6 +155,20 @@ namespace SistemaVentas.Forms
             this.btnProductos.UseVisualStyleBackColor = false;
             this.btnProductos.Click += this.btnProductos_Click;
             // 
+            // btnGrafico
+            // 
+            this.btnGrafico.BackColor = Color.FromArgb(230, 126, 34);
+            this.btnGrafico.FlatStyle = FlatStyle.Flat;
+            this.btnGrafico.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.btnGrafico.ForeColor = Color.White;
+            this.btnGrafico.Location = new Point(340, 15);
+            this.btnGrafico.Name = "btnGrafico";
+            this.btnGrafico.Size = new Size(150, 40);
+            this.btnGrafico.TabIndex = 2;
+            this.btnGrafico.Text = "📊 GRÁFICO";
+            this.btnGrafico.UseVisualStyleBackColor = false;
+            this.btnGrafico.Click += this.btnGrafico_Click;
+            // 
             // panelTarjetas
             // 
             this.panelTarjetas.AutoScroll = true;
@@ -196,8 +211,10 @@ namespace SistemaVentas.Forms
         private Button btnActualizar;
         private Button btnVentas;
         private Button btnProductos;
+        private Button btnGrafico;
         private Panel panelTarjetas;
         private Panel panelEstadisticas;
         private Label lblEstadisticas;
+        private Panel chart1;
     }
 }

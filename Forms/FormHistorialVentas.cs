@@ -97,7 +97,6 @@ namespace SistemaVentas.Forms
                     v.Id,
                     Fecha = v.Fecha.ToString("dd/MM/yyyy HH:mm"),
                     Cliente = v.Cliente,
-                    Documento = v.DocumentoCliente,
                     FormaPago = v.FormaPago,
                     CantidadItems = v.DetallesVenta.Sum(d => d.Cantidad),
                     Subtotal = v.Subtotal.ToString("C"),
@@ -370,62 +369,11 @@ namespace SistemaVentas.Forms
             }
         }
 
-        private async void btnEliminar_Click(object sender, EventArgs e)
-        {
-            if (dgvVentas.CurrentRow == null)
-            {
-                MessageBox.Show("Seleccione una venta para anular.", 
-                              "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
 
-            var resultado = MessageBox.Show("¿Está seguro de anular esta venta?\nEsta acción no se puede deshacer.", 
-                                          "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (resultado == DialogResult.Yes)
-            {
-                try
-                {
-                    var ventaId = (int)dgvVentas.CurrentRow.Cells["Id"].Value;
-                    var venta = await _context.Ventas
-                        .Include(v => v.DetallesVenta)
-                        .ThenInclude(d => d.Producto)
-                        .FirstOrDefaultAsync(v => v.Id == ventaId);
-
-                    if (venta != null)
-                    {
-                        // Anular venta
-                        venta.Activa = false;
-
-                        // Restaurar stock de productos
-                        foreach (var detalle in venta.DetallesVenta)
-                        {
-                            if (detalle.Producto != null)
-                            {
-                                detalle.Producto.Stock += detalle.Cantidad;
-                            }
-                        }
-
-                        await _context.SaveChangesAsync();
-
-                        MessageBox.Show("Venta anulada correctamente y stock restaurado.", 
-                                      "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        CargarVentas();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al anular venta: {ex.Message}", 
-                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
 
         private void dgvVentas_SelectionChanged(object sender, EventArgs e)
         {
             btnVerDetalle.Enabled = dgvVentas.CurrentRow != null;
-            btnEliminar.Enabled = dgvVentas.CurrentRow != null;
         }
 
         private void btnActualizar_Click(object sender, EventArgs e)

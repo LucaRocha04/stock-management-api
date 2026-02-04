@@ -199,7 +199,6 @@ namespace SistemaVentas.Forms
                 {
                     Fecha = dtpFecha.Value,
                     Cliente = txtCliente.Text.Trim(),
-                    DocumentoCliente = txtDocumento.Text.Trim(),
                     FormaPago = cmbFormaPago.Text,
                     Observaciones = txtObservaciones.Text.Trim(),
                     Subtotal = _detallesVenta.Sum(d => d.Subtotal),
@@ -287,7 +286,6 @@ namespace SistemaVentas.Forms
         private void LimpiarFormulario()
         {
             txtCliente.Clear();
-            txtDocumento.Clear();
             txtObservaciones.Clear();
             dtpFecha.Value = DateTime.Now;
             cmbFormaPago.SelectedIndex = 0;

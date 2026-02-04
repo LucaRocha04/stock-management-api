@@ -592,6 +592,15 @@ namespace SistemaVentas.Forms
             MostrarVistaCategorias();
         }
 
+        private void btnVolver_Click(object sender, EventArgs e)
+        {
+            _categoriaSeleccionada = "";
+            _mostrarStockBajo = false;
+            btnVolver.Visible = false;
+            this.Text = "Gestión de Productos - Vista de Categorías";
+            MostrarVistaCategorias();
+        }
+
         private async Task SeleccionarCategoria(string categoria)
         {
             _categoriaSeleccionada = categoria;
@@ -602,6 +611,9 @@ namespace SistemaVentas.Forms
             // Ocultar panel de tarjetas y mostrar DataGrid
             panelTarjetasCategorias.Visible = false;
             dgvProductos.Visible = true;
+            
+            // Mostrar botón Volver
+            btnVolver.Visible = true;
             
             // Actualizar título para mostrar la categoría seleccionada
             this.Text = $"Gestión de Productos - Categoría: {categoria}";
@@ -880,6 +892,9 @@ namespace SistemaVentas.Forms
                 // Ocultar DataGrid y mostrar panel de tarjetas
                 dgvProductos.Visible = false;
                 panelTarjetasCategorias.Visible = true;
+                
+                // Ocultar botón Volver (estamos en vista de categorías)
+                btnVolver.Visible = false;
                 
                 // Limpiar tarjetas anteriores
                 panelTarjetasCategorias.Controls.Clear();

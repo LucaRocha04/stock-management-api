@@ -29,7 +29,6 @@ namespace SistemaVentas.Forms
         private void InitializeComponent()
         {
             this.panelTop = new Panel();
-            this.btnEliminar = new Button();
             this.btnVerDetalle = new Button();
             this.btnBuscar = new Button();
             this.btnActualizar = new Button();
@@ -57,7 +56,6 @@ namespace SistemaVentas.Forms
             // panelTop
             // 
             this.panelTop.BackColor = Color.FromArgb(52, 73, 94);
-            this.panelTop.Controls.Add(this.btnEliminar);
             this.panelTop.Controls.Add(this.btnVerDetalle);
             this.panelTop.Controls.Add(this.btnBuscar);
             this.panelTop.Controls.Add(this.btnActualizar);
@@ -209,21 +207,6 @@ namespace SistemaVentas.Forms
             this.btnVerDetalle.UseVisualStyleBackColor = false;
             this.btnVerDetalle.Click += this.btnVerDetalle_Click;
             // 
-            // btnEliminar
-            // 
-            this.btnEliminar.BackColor = Color.FromArgb(231, 76, 60);
-            this.btnEliminar.Enabled = false;
-            this.btnEliminar.FlatStyle = FlatStyle.Flat;
-            this.btnEliminar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnEliminar.ForeColor = Color.White;
-            this.btnEliminar.Location = new Point(1020, 45);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new Size(80, 27);
-            this.btnEliminar.TabIndex = 11;
-            this.btnEliminar.Text = "Anular";
-            this.btnEliminar.UseVisualStyleBackColor = false;
-            this.btnEliminar.Click += this.btnEliminar_Click;
-            // 
             // dgvVentas
             // 
             this.dgvVentas.AllowUserToAddRows = false;
@@ -339,7 +322,6 @@ namespace SistemaVentas.Forms
         private ComboBox cmbFiltroCliente;
         private Button btnBuscar;
         private Button btnVerDetalle;
-        private Button btnEliminar;
         private Button btnActualizar;
         private DataGridView dgvVentas;
         private Panel panelEstadisticas;

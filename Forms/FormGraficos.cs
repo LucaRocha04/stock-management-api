@@ -8,12 +8,14 @@ namespace SistemaVentas.Forms
     {
         private VentasContext _context;
         private string _tipoGrafico;
+        private bool _modoGrafico = false;
 
         public FormGraficos()
         {
             InitializeComponent();
             _context = new VentasContext();
             _tipoGrafico = "ventas";
+            _modoGrafico = true; // Siempre en modo gráfico
         }
 
         public FormGraficos(string tipoGrafico)
@@ -21,11 +23,18 @@ namespace SistemaVentas.Forms
             InitializeComponent();
             _context = new VentasContext();
             _tipoGrafico = tipoGrafico;
+            _modoGrafico = true; // Siempre en modo gráfico
             CargarDatos();
         }
 
         private void FormGraficos_Load(object sender, EventArgs e)
         {
+            // Ocultar el botón de cambio de modo
+            btnGrafico.Visible = false;
+            
+            // Forzar modo gráfico
+            MostrarVistaGrafico(true);
+            
             CargarDatos();
         }
 
@@ -39,6 +48,29 @@ namespace SistemaVentas.Forms
                 default:
                     CargarEstadisticasVentas();
                     break;
+            }
+        }
+
+        private void MostrarVistaGrafico(bool mostrarGrafico)
+        {
+            _modoGrafico = mostrarGrafico;
+            lblEstadisticas.Visible = !mostrarGrafico;
+            chart1.Visible = mostrarGrafico;
+            
+            // Actualizar texto del botón
+            btnGrafico.Text = mostrarGrafico ? "📄 TEXTO" : "📊 GRÁFICO";
+            
+            if (mostrarGrafico)
+            {
+                // Redimensionar gráfico para ocupar todo el espacio
+                chart1.Dock = DockStyle.Fill;
+                chart1.BringToFront();
+                CrearGrafico();
+            }
+            else
+            {
+                chart1.Dock = DockStyle.None;
+                chart1.SendToBack();
             }
         }
 
@@ -355,19 +387,27 @@ namespace SistemaVentas.Forms
 
         private void btnActualizar_Click(object sender, EventArgs e)
         {
-            CargarDatos();
+            // Solo actualizar gráfico (modo único)
+            CrearGrafico();
         }
 
         private void btnVentas_Click(object sender, EventArgs e)
         {
             _tipoGrafico = "ventas";
-            CargarEstadisticasVentas();
+            // Solo mostrar gráfico (modo único)
+            CrearGrafico();
         }
 
         private void btnProductos_Click(object sender, EventArgs e)
         {
             _tipoGrafico = "productos";
-            CargarEstadisticasProductos();
+            // Solo mostrar gráfico (modo único)
+            CrearGrafico();
+        }
+
+        private void btnGrafico_Click(object sender, EventArgs e)
+        {
+            MostrarVistaGrafico(!_modoGrafico);
         }
 
         private string GetNombreMes(int mes)
@@ -375,6 +415,222 @@ namespace SistemaVentas.Forms
             string[] meses = { "", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                               "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
             return meses[mes];
+        }
+
+        private async void CrearGrafico()
+        {
+            try
+            {
+                // Limpiar panel de gráfico
+                chart1.Controls.Clear();
+                chart1.BackColor = Color.White;
+                chart1.AutoScroll = true;
+                
+                // Asegurar que el panel esté visible
+                chart1.Visible = true;
+                chart1.BringToFront();
+
+                if (_tipoGrafico.ToLower() == "productos")
+                {
+                    await CrearGraficoProductos();
+                }
+                else
+                {
+                    await CrearGraficoVentas();
+                }
+                
+                // Forzar redibujado
+                chart1.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al crear gráfico: {ex.Message}", "Error", 
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task CrearGraficoVentas()
+        {
+            // Obtener datos actualizados de la base de datos
+            var ventas = await _context.Ventas.Where(v => v.Activa).ToListAsync();
+            
+            if (!ventas.Any())
+            {
+                var lblNoData = new Label
+                {
+                    Text = "No hay datos de ventas disponibles",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.Gray,
+                    AutoSize = true,
+                    Location = new Point(50, 50)
+                };
+                chart1.Controls.Add(lblNoData);
+                return;
+            }
+
+            // Ventas por mes
+            var ventasPorMes = ventas
+                .GroupBy(v => new { v.Fecha.Year, v.Fecha.Month })
+                .Select(g => new
+                {
+                    Periodo = $"{GetNombreMes(g.Key.Month)} {g.Key.Year}",
+                    Total = g.Sum(v => v.Total),
+                    Cantidad = g.Count()
+                })
+                .OrderByDescending(x => x.Total)
+                .Take(5)
+                .OrderBy(x => x.Total)
+                .ToList();
+
+            // Crear título
+            var titulo = new Label
+            {
+                Text = "📈 Top 5 Meses con Mayores Ventas",
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 73, 94),
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
+            chart1.Controls.Add(titulo);
+
+            // Crear gráfico de barras simple
+            CrearBarrasHorizontales(ventasPorMes.Select(v => new BarraData 
+            { 
+                Etiqueta = v.Periodo, 
+                Valor = (double)v.Total, 
+                Color = Color.FromArgb(52, 152, 219),
+                Formato = "C0"
+            }).ToList(), 60);
+        }
+
+        private async Task CrearGraficoProductos()
+        {
+            // Obtener datos actualizados de la base de datos
+            var detallesVenta = await _context.DetallesVenta
+                .Include(d => d.Producto)
+                .Include(d => d.Venta)
+                .Where(d => d.Venta.Activa)
+                .ToListAsync();
+
+            if (!detallesVenta.Any())
+            {
+                var lblNoData = new Label
+                {
+                    Text = "No hay datos de productos vendidos",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.Gray,
+                    AutoSize = true,
+                    Location = new Point(50, 50)
+                };
+                chart1.Controls.Add(lblNoData);
+                return;
+            }
+
+            // Productos más vendidos
+            var productosVendidos = detallesVenta
+                .GroupBy(d => new { d.ProductoId, d.Producto.Nombre })
+                .Select(g => new
+                {
+                    Producto = g.Key.Nombre,
+                    CantidadVendida = g.Sum(d => d.Cantidad),
+                    MontoTotal = g.Sum(d => d.Subtotal)
+                })
+                .OrderByDescending(x => x.CantidadVendida)
+                .Take(8)
+                .OrderBy(x => x.CantidadVendida)
+                .ToList();
+
+            // Crear título
+            var titulo = new Label
+            {
+                Text = "🏆 Top 8 Productos Más Vendidos",
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 73, 94),
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
+            chart1.Controls.Add(titulo);
+
+            // Crear gráfico de barras simple
+            CrearBarrasHorizontales(productosVendidos.Select(p => new BarraData 
+            { 
+                Etiqueta = p.Producto.Length > 20 ? p.Producto.Substring(0, 20) + "..." : p.Producto,
+                Valor = p.CantidadVendida, 
+                Color = Color.FromArgb(155, 89, 182),
+                Formato = "0"
+            }).ToList(), 60);
+        }
+
+        private void CrearBarrasHorizontales(List<BarraData> datos, int yInicial)
+        {
+            if (!datos.Any()) return;
+
+            var maxValor = datos.Max(d => d.Valor);
+            var totalValor = datos.Sum(d => d.Valor);
+            var maxAnchoBarra = 300;
+            var alturaBarra = 25;
+            var espaciado = 32;
+            var x = 200; // Espacio para etiquetas
+
+            for (int i = 0; i < datos.Count; i++)
+            {
+                var dato = datos[i];
+                var y = yInicial + (i * espaciado);
+                var porcentaje = totalValor > 0 ? (dato.Valor / totalValor) * 100 : 0;
+                
+                // Etiqueta
+                var lblEtiqueta = new Label
+                {
+                    Text = dato.Etiqueta,
+                    Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                    ForeColor = Color.Black,
+                    AutoSize = false,
+                    Size = new Size(180, 20),
+                    Location = new Point(10, y + 2),
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                chart1.Controls.Add(lblEtiqueta);
+
+                // Barra
+                var anchoBarra = maxValor > 0 ? (int)((dato.Valor / maxValor) * maxAnchoBarra) : 0;
+                anchoBarra = Math.Max(anchoBarra, 20); // Ancho mínimo más visible
+                
+                var panelBarra = new Panel
+                {
+                    BackColor = dato.Color,
+                    Size = new Size(anchoBarra, alturaBarra),
+                    Location = new Point(x, y),
+                    BorderStyle = BorderStyle.None
+                };
+                chart1.Controls.Add(panelBarra);
+
+                // Valor con porcentaje
+                var textoValor = dato.Formato == "C0" ? 
+                    $"{((decimal)dato.Valor).ToString("C0")} ({porcentaje:F1}%)" : 
+                    $"{dato.Valor.ToString("0")} ({porcentaje:F1}%)";
+                
+                // Siempre mostrar el valor fuera de la barra (a la derecha)
+                var lblValor = new Label
+                {
+                    Text = textoValor,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    ForeColor = Color.Black,
+                    AutoSize = true,
+                    BackColor = Color.Transparent,
+                    Location = new Point(x + anchoBarra + 10, y + 2)
+                };
+                
+                chart1.Controls.Add(lblValor);
+                lblValor.BringToFront();
+            }
+        }
+
+        private class BarraData
+        {
+            public string Etiqueta { get; set; } = string.Empty;
+            public double Valor { get; set; }
+            public Color Color { get; set; }
+            public string Formato { get; set; } = "0";
         }
     }
 }

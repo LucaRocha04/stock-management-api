@@ -32,8 +32,7 @@ namespace SistemaVentas.Forms
             this.lblTitulo = new Label();
             this.lblCliente = new Label();
             this.txtCliente = new TextBox();
-            this.lblDocumento = new Label();
-            this.txtDocumento = new TextBox();
+
             this.lblFecha = new Label();
             this.dtpFecha = new DateTimePicker();
             this.lblFormaPago = new Label();
@@ -80,8 +79,7 @@ namespace SistemaVentas.Forms
             this.panelVenta.Controls.Add(this.lblFormaPago);
             this.panelVenta.Controls.Add(this.dtpFecha);
             this.panelVenta.Controls.Add(this.lblFecha);
-            this.panelVenta.Controls.Add(this.txtDocumento);
-            this.panelVenta.Controls.Add(this.lblDocumento);
+
             this.panelVenta.Controls.Add(this.txtCliente);
             this.panelVenta.Controls.Add(this.lblCliente);
             this.panelVenta.Controls.Add(this.lblTitulo);
@@ -119,22 +117,6 @@ namespace SistemaVentas.Forms
             this.txtCliente.Size = new Size(250, 23);
             this.txtCliente.TabIndex = 2;
             // 
-            // lblDocumento
-            // 
-            this.lblDocumento.AutoSize = true;
-            this.lblDocumento.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.lblDocumento.Location = new Point(290, 60);
-            this.lblDocumento.Name = "lblDocumento";
-            this.lblDocumento.Size = new Size(74, 15);
-            this.lblDocumento.TabIndex = 3;
-            this.lblDocumento.Text = "Documento:";
-            // 
-            // txtDocumento
-            // 
-            this.txtDocumento.Location = new Point(290, 80);
-            this.txtDocumento.Name = "txtDocumento";
-            this.txtDocumento.Size = new Size(150, 23);
-            this.txtDocumento.TabIndex = 4;
             // 
             // lblFecha
             // 
@@ -492,8 +474,7 @@ namespace SistemaVentas.Forms
         private Label lblTitulo;
         private Label lblCliente;
         private TextBox txtCliente;
-        private Label lblDocumento;
-        private TextBox txtDocumento;
+
         private Label lblFecha;
         private DateTimePicker dtpFecha;
         private Label lblFormaPago;

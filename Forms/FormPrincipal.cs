@@ -80,19 +80,9 @@ namespace SistemaVentas.Forms
             CrearTarjetaAcceso(panelTarjetas, "📋 HISTORIAL", "Ver historial", 
                               Color.FromArgb(231, 76, 60), 600, () => historialVentasToolStripMenuItem_Click(this, EventArgs.Empty));
 
-            // Información del sistema
-            var lblInfo = new Label
-            {
-                Text = $"Sistema iniciado el {DateTime.Now:dd/MM/yyyy} • Versión 1.0",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(149, 165, 166),
-                AutoSize = true,
-                Location = new Point(100, 520)
-            };
-
             // Agregar controles al panel
             panelBienvenida.Controls.AddRange(new Control[] { 
-                lblTitulo, lblSubtitulo, panelTarjetas, lblInfo 
+                lblTitulo, lblSubtitulo, panelTarjetas 
             });
             
             panelPrincipal.Controls.Add(panelBienvenida);

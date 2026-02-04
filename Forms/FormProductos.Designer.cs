@@ -29,6 +29,7 @@ namespace SistemaVentas.Forms
         private void InitializeComponent()
         {
             this.panelTop = new Panel();
+            this.btnVolver = new Button();
             this.btnEliminar = new Button();
             this.btnModificar = new Button();
             this.btnNuevo = new Button();
@@ -66,6 +67,7 @@ namespace SistemaVentas.Forms
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.btnVolver);
             this.panelTop.Controls.Add(this.btnEliminar);
             this.panelTop.Controls.Add(this.btnModificar);
             this.panelTop.Controls.Add(this.btnNuevo);
@@ -120,6 +122,21 @@ namespace SistemaVentas.Forms
             this.btnNuevo.Text = "Nuevo";
             this.btnNuevo.UseVisualStyleBackColor = false;
             this.btnNuevo.Click += this.btnNuevo_Click;
+            // 
+            // btnVolver
+            // 
+            this.btnVolver.Anchor = ((AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnVolver.BackColor = Color.FromArgb(52, 152, 219);
+            this.btnVolver.FlatStyle = FlatStyle.Flat;
+            this.btnVolver.ForeColor = Color.White;
+            this.btnVolver.Location = new Point(810, 20);
+            this.btnVolver.Name = "btnVolver";
+            this.btnVolver.Size = new Size(80, 30);
+            this.btnVolver.TabIndex = 8;
+            this.btnVolver.Text = "Volver";
+            this.btnVolver.UseVisualStyleBackColor = false;
+            this.btnVolver.Visible = false;
+            this.btnVolver.Click += this.btnVolver_Click;
             // 
             // txtBuscar
             // 
@@ -468,5 +485,6 @@ namespace SistemaVentas.Forms
         private Button btnGuardar;
         private Button btnCancelar;
         private Panel panelTarjetasCategorias;
+        private Button btnVolver;
     }
 }
